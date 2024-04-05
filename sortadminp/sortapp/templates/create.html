@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <style>
+
+        body {
+            margin-top: 20px;
+            margin-left: 40px;
+            margin-bottom: 20px;
+            margin-right: 40px;
+        }
+
+        .input{
+            width: 40%;
+        }
+
+
+    </style>
+
+</head>
+<body>
+      <div class="col-sm-2">
+        <ul class="sidebar-nav">
+            {% if user.is_authenticated %}
+            <li>User: {{ user.get_username }}</li>
+            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <h3>Привязка номенклатуры к зоне сортировки</h3>
+
+
+    {% if messages %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <div class="container text-center">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class = "input">
+            <p>
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Выберите методику</label><br>
+                    <select class="form-select" id="inputGroupSelect01" name="analysis">
+                        {% for analysis in analyzes %}
+                            <option value="{{analysis.id}}">{{analysis.analisys_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </p>
+            <p>
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Выберите локацию</label><br>
+                    <select class="form-select" id="inputGroupSelect01" name="location">
+                        {% for location in locations %}
+                            <option value="{{location.id}}">{{location.location}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </p>
+            <p>
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Выберите рабочий поток</label><br>
+                    <select class="form-select" id="inputGroupSelect01" name="workflow">
+                        {% for workflow in workflows %}
+                            <option value="{{workflow.id}}">{{workflow.workflow}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </p>
+            <p>
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Выберите зону сортировки</label><br>
+                    <select class="form-select" id="inputGroupSelect01" name="sort_area">
+                        {% for sort_area in sort_areas %}
+                            <option value="{{sort_area.id}}">{{sort_area.sort_area}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </p>
+            <div class="d-grid gap-3 col-1">
+                <input class="btn btn-success me-md-2" type="submit" value="Сохранить" >
+            </div>
+        </div>
+    </form>
+</body>
+</html>

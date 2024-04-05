@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <style>
+        a {text-decoration: none;
+        }
+
+        body {
+            margin-top: 20px;
+            margin-left: 40px;
+            margin-bottom: 20px;
+            margin-right: 40px;
+        }
+
+        .input{
+            width: 40%;
+        }
+
+        .alert{
+            width: 40%;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="col-sm-2">
+        <ul class="sidebar-nav">
+            {% if user.is_authenticated %}
+            <li>User: {{ user.get_username }}</li>
+            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <h3>Заведение новой методики</h3>
+
+
+    {% if messages %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <div class="container text-center">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class = "input">
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите наименование анализа</label><br>
+                <input type="text" class="form-control" placeholder="Analysis name (обязательно)" name="analisys_name" />
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите хост код</label><br>
+                <input type="text" class="form-control" placeholder="Host code (обязательно)" name="host_code" />
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите номер методики в CITM</label><br>
+                <input type="number" class="form-control" placeholder="SMA" name="sma_id">
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">Выберите основной тип контейнера</label><br>
+                <select class="form-select" id="inputGroupSelect01" name="container_type_main">
+                    {% for container_type in container_types_main %}
+                        <option value="{{container_type.id}}">{{container_type.container_type}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">Выберите транспортный тип контейнера</label><br>
+                <select class="form-select" id="inputGroupSelect01" name="container_type_tr">
+                    {% for container_type in container_types_tr %}
+                        <option value="{{container_type.id}}">{{container_type.container_type}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите мертвый объем, мкл. для методики</label><br>
+                <input type="number" class="form-control" placeholder="Dead volume" name="dead_volume">
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите объем на тест, мкл.</label><br>
+                <input type="number" class="form-control" placeholder="Test volume" name="test_volume">
+            </div>
+        </p>
+        <p>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="lih_flag">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Проставьте флаг если необходимо проверять методику на ЛИГ</label>
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">Выберите анализатор/метод выполнения</label><br>
+                <select class="form-select" id="inputGroupSelect01" name="analyzer">
+                    {% for analyzer in analyzers %}
+                        <option value="{{analyzer.id}}">{{analyzer.analyser_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </p>
+        <p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" id="basic-addon1">Введите описание методики</label><br>
+                <input type="text" class="form-control" placeholder="Description" name="description" />
+            </div>
+        </p>
+        <div class="d-grid gap-3 col-1">
+            <input class="btn btn-success me-md-2" type="submit" value="Сохранить" >
+        </div>
+        </div>
+    </form>
+</body>
+</html>

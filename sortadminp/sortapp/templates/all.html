@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <style>
+
+        body {
+            margin-top: 20px;
+            margin-left: 40px;
+            margin-bottom: 20px;
+            margin-right: 40px;
+        }
+
+    </style>
+</head>
+<body>
+      <div class="col-sm-2">
+        <ul class="sidebar-nav">
+            {% if user.is_authenticated %}
+            <li>User: {{ user.get_username }}</li>
+            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+            {% endif %}
+        </ul>
+      </div>
+
+    <div class="table_div">
+        <h3>Методика</h3>
+        <table class="table table-bordered border-primary">
+            <thead><th>SMA ID</th>
+                <th>Наименование методики</th>
+                <th>Хост код</th>
+                <th>Тип контейнера</th>
+                <th>Транспортный контейнер</th>
+                <th>Мертвый объем</th>
+                <th>Объем на тест</th>
+                <th>ЛИГ</th>
+                <th>Анализатор</th>
+                <th>Описание</th>
+                <th>Действия</th></thead>
+            {% for analysis in analyzes %}
+            <tr>
+                <td>{{ analysis.sma_id }}</td>
+                <td>{{ analysis.analisys_name }}</td>
+                <td>{{ analysis.host_code }}</td>
+                <td>{{ analysis.container_type_main }}</td>
+                <td>{{ analysis.container_type_tr }}</td>
+                <td>{{ analysis.dead_volume }}</td>
+                <td>{{ analysis.test_volume }}</td>
+                <td>{{ analysis.lih_flag }}</td>
+                <td>{{ analysis.analyzer }}</td>
+                <td>{{ analysis.description }}</td>
+                <td>
+                    <a href="edit/{{analysis.id}}">Изменить</a> | <a href="delete_analysis/{{analysis.id}}">Удалить</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+    <h3>Сортировка по потоку </h3>
+        <form method="GET">
+            <input type="text" name="search_workflow" placeholder="Сортировка по потоку">
+            <button type="submit">Найти</button>
+        </form>
+
+    {% if messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <div class="container text-center">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="table_div">
+        <h3>Привязки</h3>
+        <table class="table table-bordered border-primary">
+            <tr>
+            <thead><th>Методика</th>
+                <th>Локация</th>
+                <th>Рабочий поток</th>
+                <th>Рабочий цикл</th>
+                <th>Зона сортировки</th>
+                <th>Действие</th></thead>
+            </tr>
+            {% for analysis_record in analysis_records %}
+            <tr>
+                <td>{{ analysis_record.analysis }}</td>
+                <td>{{ analysis_record.location }}</td>
+                <td>{{ analysis_record.workflow }}</td>
+                <td>{{ analysis_record.sort_area.routine }}</td>
+                <td>{{ analysis_record.sort_area }}</td>
+                <td><a href="edit/{{analysis_record.id}}">Изменить</a> | <a href="delete_analysis_record/{{analysis_record.id}}">Удалить</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>
